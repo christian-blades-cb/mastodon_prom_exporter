@@ -1,0 +1,35 @@
+* Mastodon Prometheus Exporter
+
+Pulls data from the ~/api/v1/instance~ endpoint on the target instance and exposes for prometheus.
+
+There's prior work, but I really wanted to try out [[https://github.com/seanmonstar/warp][warp]].
+
+** Usage
+
+#+begin_src bash
+  mastodon_prom_exporter --host https://interestingtimes.club --bind 127.0.0.1:9120
+#+end_src
+
+#+begin_src bash :results output verbatim :exports both
+  curl -i localhost:9120/metrics
+#+end_src
+
+#+RESULTS:
+#+begin_example
+HTTP/1.1 200 OK
+content-type: text/plain; version=0.0.4
+content-length: 433
+date: Mon, 16 Jan 2023 03:37:56 GMT
+
+# HELP mastodon_domains Number of domains this instance is aware of
+# TYPE mastodon_domains gauge
+mastodon_domains{instance="interestingtimes.club"} 1453
+# HELP mastodon_statuses Total number of all statuses
+# TYPE mastodon_statuses gauge
+mastodon_statuses{instance="interestingtimes.club"} 71
+# HELP mastodon_users Total number of users on the instance
+# TYPE mastodon_users gauge
+mastodon_users{instance="interestingtimes.club"} 3
+#+end_example
+
+Metrics are collected every 60s, so extra calls to the metrics endpoint don't result in calls to the instance.
